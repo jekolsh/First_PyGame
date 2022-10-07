@@ -66,10 +66,7 @@ class player(object):
                 win.blit(walkLeft [0], (self.x, self.y))
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
         #pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
-                    
 
-            #for bullet in bullets:
-                #bullet.draw(win)
     
     def hit(self):
         self.x = 60
@@ -115,7 +112,8 @@ class enemy(object):
         self.end = end
         self.path = [self.x, self.end]
         self.animCount = 0
-        self.vel = random.randint(1, 5)
+        self.vel = 3
+        #random.randint(1, 5)
         self.hitbox = (self.x + 17, self.y +2, 31, 57)
         self.health = random.randint(3, 10)
         self.visible = True
@@ -141,13 +139,14 @@ class enemy(object):
         #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
             
     def move(self):
-        if self.vel > 0:
+        if self.vel >= 0:
+        ##############if self.vel > 0:
             if self.x < self.path[1] + self.vel:
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
-                #self.x += self.vel
                 self.animCount = 0
+
         else:
             if self.x - self.vel > self.path[0]:
                 self.x += self.vel
@@ -172,7 +171,9 @@ def drawWindow():
     win.blit(text, (390, 10))
     man.draw(win)
     goblin.draw(win)  
-    goblin2.draw(win)  
+    goblin2.draw(win) 
+    goblin3.draw(win) 
+    goblin4.draw(win)  
     for bullet in bullets:
         bullet.draw(win)
 
@@ -183,14 +184,16 @@ def drawWindow():
 font = pygame.font.SysFont('comicsans', 15, True)
 man = player(300, 410, 60, 71)
 goblin = enemy(100, 410, 64, 64, 450)
-goblin2 = enemy(10, 410, 64, 64, 450)
+goblin2 = enemy(25, 410, 64, 64, 450)
+goblin3 = enemy(50, 410, 64, 64, 450)
+goblin4 = enemy(75, 410, 64, 64, 450)
 shootLoop = 0
 bullets = []
 run = True
 while run:
     #drawWindow()
     clock.tick(30)
-    if not goblin.visible and  not goblin2.visible:
+    if not goblin.visible and  not goblin2.visible and not goblin3.visible and not goblin4.visible:
         print("Win-win!")
                 
     if score < -1:
@@ -202,10 +205,18 @@ while run:
         man.hit()
         score -= 5
         goblin.vel = -goblin.vel
-    if goblin2.visible and  man.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin2.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin2.hitbox[0] and man.hitbox[0] < goblin2.hitbox[0] + goblin2.hitbox[2]:
+    if goblin2.visible and  man.hitbox[1] < goblin2.hitbox[1] + goblin2.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin2.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin2.hitbox[0] and man.hitbox[0] < goblin2.hitbox[0] + goblin2.hitbox[2]:
         man.hit()
         score -= 5
         goblin2.vel = -goblin2.vel
+    if goblin3.visible and man.hitbox[1] < goblin3.hitbox[1] + goblin3.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin3.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin3.hitbox[0] and man.hitbox[0] < goblin3.hitbox[0] + goblin3.hitbox[2]:
+        man.hit()
+        score -= 5
+        goblin3.vel = -goblin3.vel
+    if goblin4.visible and man.hitbox[1] < goblin4.hitbox[1] + goblin4.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin4.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin4.hitbox[0] and man.hitbox[0] < goblin4.hitbox[0] + goblin4.hitbox[2]:
+        man.hit()
+        score -= 5
+        goblin4.vel = -goblin4.vel
 
 
      
@@ -222,12 +233,18 @@ while run:
         
         if goblin.visible and bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1] and bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
                 goblin.hit()
-                #goblin2.hit()
                 score += 1
                 bullets.pop(bullets.index(bullet))
         elif goblin2.visible and bullet.y - bullet.radius < goblin2.hitbox[1] + goblin2.hitbox[3] and bullet.y + bullet.radius > goblin2.hitbox[1] and bullet.x + bullet.radius > goblin2.hitbox[0] and bullet.x - bullet.radius < goblin2.hitbox[0] + goblin2.hitbox[2]:
-                # goblin.hit()
                 goblin2.hit()
+                score += 1
+                bullets.pop(bullets.index(bullet))
+        elif goblin3.visible and bullet.y - bullet.radius < goblin3.hitbox[1] + goblin3.hitbox[3] and bullet.y + bullet.radius > goblin3.hitbox[1] and bullet.x + bullet.radius > goblin3.hitbox[0] and bullet.x - bullet.radius < goblin3.hitbox[0] + goblin3.hitbox[2]:
+                goblin3.hit()
+                score += 1
+                bullets.pop(bullets.index(bullet))
+        elif goblin4.visible and bullet.y - bullet.radius < goblin4.hitbox[1] + goblin4.hitbox[3] and bullet.y + bullet.radius > goblin4.hitbox[1] and bullet.x + bullet.radius > goblin4.hitbox[0] and bullet.x - bullet.radius < goblin4.hitbox[0] + goblin4.hitbox[2]:
+                goblin4.hit()
                 score += 1
                 bullets.pop(bullets.index(bullet))
 
