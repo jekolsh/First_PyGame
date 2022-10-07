@@ -66,7 +66,10 @@ class player(object):
                 win.blit(walkLeft [0], (self.x, self.y))
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
         #pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
+                    
 
+            #for bullet in bullets:
+                #bullet.draw(win)
     
     def hit(self):
         self.x = 60
@@ -139,14 +142,13 @@ class enemy(object):
         #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
             
     def move(self):
-        if self.vel >= 0:
-        ##############if self.vel > 0:
+        if self.vel > 0:
             if self.x < self.path[1] + self.vel:
                 self.x += self.vel
             else:
                 self.vel = self.vel * -1
+                #self.x += self.vel
                 self.animCount = 0
-
         else:
             if self.x - self.vel > self.path[0]:
                 self.x += self.vel
@@ -173,7 +175,7 @@ def drawWindow():
     goblin.draw(win)  
     goblin2.draw(win) 
     goblin3.draw(win) 
-    goblin4.draw(win)  
+    goblin4.draw(win)   
     for bullet in bullets:
         bullet.draw(win)
 
@@ -184,7 +186,7 @@ def drawWindow():
 font = pygame.font.SysFont('comicsans', 15, True)
 man = player(300, 410, 60, 71)
 goblin = enemy(100, 410, 64, 64, 450)
-goblin2 = enemy(25, 410, 64, 64, 450)
+goblin2 = enemy(10, 410, 64, 64, 450)
 goblin3 = enemy(50, 410, 64, 64, 450)
 goblin4 = enemy(75, 410, 64, 64, 450)
 shootLoop = 0
@@ -205,7 +207,7 @@ while run:
         man.hit()
         score -= 5
         goblin.vel = -goblin.vel
-    if goblin2.visible and  man.hitbox[1] < goblin2.hitbox[1] + goblin2.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin2.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin2.hitbox[0] and man.hitbox[0] < goblin2.hitbox[0] + goblin2.hitbox[2]:
+    if goblin2.visible and  man.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin2.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin2.hitbox[0] and man.hitbox[0] < goblin2.hitbox[0] + goblin2.hitbox[2]:
         man.hit()
         score -= 5
         goblin2.vel = -goblin2.vel
