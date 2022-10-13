@@ -1,11 +1,17 @@
 import pygame
 import random
+import button
 
 pygame.init()
 
 win =pygame.display.set_mode((500, 500))
 
+
 pygame.display.set_caption("Trump Game")
+
+#load images
+start_img = pygame.image.load('start_btn.png').convert_alpha()
+exit_img = pygame.image.load('exit_btn.png').convert_alpha()
 
 
 walkRight = [pygame.image.load("pygame_right_1.png"), 
@@ -23,13 +29,24 @@ playerStand = pygame.image.load("pygame_idle.png")
 
 clock = pygame.time.Clock()
 
-#bulletSound = pygame.mixer.Sound('Game_bullet_2.mp3')
-#hitSound = pygame.mixer.Sound('Game_hit.mp3')
 
-#music = pygame.mixer.music.load('music.mp3')
-#pygame.mixer.music.play(-1)
+#button instances creating
+start_button = button.Button(10, 200, start_img, 0.8)
+exit_button = button.Button(270, 200, exit_img, 0.8)
+
+# pygame.mixer.music.load('music.mp3')
+# pygame.mixer.music.play()
+
+
+bulletSound = pygame.mixer.music.load('Game_bullet_2.mp3')
+hitSound = pygame.mixer.music.load('Game_hit.mp3')
+
+music = pygame.mixer.music.load('music.mp3')
+pygame.mixer.music.play(-1)
+
 
 score = 0
+
 
 class player(object): 
     def __init__(self, x, y, width, height):
@@ -65,20 +82,20 @@ class player(object):
             else:
                 win.blit(walkLeft [0], (self.x, self.y))
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
-        #pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
-                    
 
-            #for bullet in bullets:
-                #bullet.draw(win)
     
     def hit(self):
         self.x = 60
         self.y = 410
         self.walkCount = 0
+        self.isJump = False
+        #self.jumpCount = 10 
         font1 = pygame.font.SysFont('comicsans', 100)
         text = font1.render('-5', 1, (255,0,0))
         win.blit(text, (250 - (text.get_width()/2),200))
-        pygame.display.update()
+        #pygame.display.update()
+        
+
         i = 0
         while i < 300:
             pygame.time.delay(3)
@@ -98,6 +115,8 @@ class projectile(object):
         self.color = color
         self.facing = facing
         self.vel = 8 * facing #hastighet
+
+        
         
 
     def draw(self,win):
@@ -163,6 +182,7 @@ class enemy(object):
             self.health <= 0
             self.visible = False
             goblin.draw(win)
+            
 
         print("hit")
 
@@ -180,9 +200,9 @@ def drawWindow():
         bullet.draw(win)
 
 
-    pygame.display.update()
+    #pygame.display.update()
 
-#main loop
+
 font = pygame.font.SysFont('comicsans', 15, True)
 man = player(300, 410, 60, 71)
 goblin = enemy(100, 410, 64, 64, 450)
@@ -191,9 +211,50 @@ goblin3 = enemy(50, 410, 64, 64, 450)
 goblin4 = enemy(75, 410, 64, 64, 450)
 shootLoop = 0
 bullets = []
+
+
+#main loop
 run = True
+# while run:
+#     #drawWindow()
+
+#     # win.fill((202, 228, 241))
+#     # start_button.draw(win)
+#     # exit_button.draw(win)
+
+
+    
+
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             run = False
+#     pygame.display.update()
+
+
 while run:
     #drawWindow()
+
+    win.fill((202, 228, 241))
+    
+    if start_button.draw(win) == True:
+        print('START')
+        
+    if exit_button.draw(win) == True:
+        run = False
+        #print('EXIT')
+
+
+    
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    pygame.display.update()
+
+
+    
+
+
     clock.tick(30)
     if not goblin.visible and  not goblin2.visible and not goblin3.visible and not goblin4.visible:
         print("Win-win!")
@@ -209,14 +270,17 @@ while run:
         goblin.vel = -goblin.vel
     if goblin2.visible and  man.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin2.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin2.hitbox[0] and man.hitbox[0] < goblin2.hitbox[0] + goblin2.hitbox[2]:
         man.hit()
+
         score -= 5
         goblin2.vel = -goblin2.vel
     if goblin3.visible and man.hitbox[1] < goblin3.hitbox[1] + goblin3.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin3.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin3.hitbox[0] and man.hitbox[0] < goblin3.hitbox[0] + goblin3.hitbox[2]:
         man.hit()
+
         score -= 5
         goblin3.vel = -goblin3.vel
     if goblin4.visible and man.hitbox[1] < goblin4.hitbox[1] + goblin4.hitbox[3] and man.hitbox[1] + man.hitbox[3] > goblin4.hitbox[1] and man.hitbox[0] + man.hitbox[2] > goblin4.hitbox[0] and man.hitbox[0] < goblin4.hitbox[0] + goblin4.hitbox[2]:
         man.hit()
+
         score -= 5
         goblin4.vel = -goblin4.vel
 
@@ -227,26 +291,28 @@ while run:
     if shootLoop > 3:
         shootLoop = 0
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+
     
     for bullet in bullets:
         
         if goblin.visible and bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1] and bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
                 goblin.hit()
+                
                 score += 1
                 bullets.pop(bullets.index(bullet))
         elif goblin2.visible and bullet.y - bullet.radius < goblin2.hitbox[1] + goblin2.hitbox[3] and bullet.y + bullet.radius > goblin2.hitbox[1] and bullet.x + bullet.radius > goblin2.hitbox[0] and bullet.x - bullet.radius < goblin2.hitbox[0] + goblin2.hitbox[2]:
                 goblin2.hit()
+                
                 score += 1
                 bullets.pop(bullets.index(bullet))
         elif goblin3.visible and bullet.y - bullet.radius < goblin3.hitbox[1] + goblin3.hitbox[3] and bullet.y + bullet.radius > goblin3.hitbox[1] and bullet.x + bullet.radius > goblin3.hitbox[0] and bullet.x - bullet.radius < goblin3.hitbox[0] + goblin3.hitbox[2]:
                 goblin3.hit()
+                
                 score += 1
                 bullets.pop(bullets.index(bullet))
         elif goblin4.visible and bullet.y - bullet.radius < goblin4.hitbox[1] + goblin4.hitbox[3] and bullet.y + bullet.radius > goblin4.hitbox[1] and bullet.x + bullet.radius > goblin4.hitbox[0] and bullet.x - bullet.radius < goblin4.hitbox[0] + goblin4.hitbox[2]:
                 goblin4.hit()
+                
                 score += 1
                 bullets.pop(bullets.index(bullet))
 
@@ -297,7 +363,7 @@ while run:
                 man.y +=  (man.jumpCount **2) / 2
             else:
                 man.y-= (man.jumpCount **2) / 2
-            man.jumpCount -= 1
+                man.jumpCount -= 1
         else:
             man.isJump = False
             man.jumpCount = 10
