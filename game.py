@@ -138,7 +138,7 @@ while run:
         man.standing = False
     else:
         man.standing = True
-        man.animCount = 0 
+        man.animCount = 0
 
     if not(man.isJump):
         if keys[pygame.K_UP]:
