@@ -1,3 +1,4 @@
+from re import T
 import pygame
 import random
 import button
@@ -189,8 +190,6 @@ class enemy(object):
 
 def drawWindow():
     win.blit(bg, (0, 0))
-    text = font.render('Score: ' + str(score), 1, (0,0,0))
-    win.blit(text, (390, 10))
     man.draw(win)
     goblin.draw(win)  
     goblin2.draw(win) 
@@ -202,6 +201,10 @@ def drawWindow():
 
     #pygame.display.update()
 
+def drawWindow2():
+    win.blit(bg, (0, 0))
+    text = font.render('Score: ' + str(score), 1, (0,0,0))
+    win.blit(text, (390, 10))
 
 font = pygame.font.SysFont('comicsans', 15, True)
 man = player(300, 410, 60, 71)
@@ -215,36 +218,38 @@ bullets = []
 
 #main loop
 run = True
-# while run:
-#     #drawWindow()
 
-#     # win.fill((202, 228, 241))
-#     # start_button.draw(win)
-#     # exit_button.draw(win)
-
-
-    
-
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             run = False
-#     pygame.display.update()
-
-
-while run:
-    #drawWindow()
+run2 = True
+while run2:
 
     win.fill((202, 228, 241))
-    
+
+
     if start_button.draw(win) == True:
         print('START')
+        run2 = False
+        drawWindow()
+
+
+
         
     if exit_button.draw(win) == True:
-        run = False
-        #print('EXIT')
+        run2 = False
+        pygame.quit()
+        print('EXIT')
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run2 = False
+    pygame.display.update()
 
 
-    
+    clock.tick(30)
+
+while run:
+
+    win.fill((202, 228, 241))
+    drawWindow()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -253,8 +258,6 @@ while run:
 
 
     
-
-
     clock.tick(30)
     if not goblin.visible and  not goblin2.visible and not goblin3.visible and not goblin4.visible:
         print("Win-win!")
