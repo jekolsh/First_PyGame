@@ -260,10 +260,15 @@ while run:
     
     clock.tick(30)
     if not goblin.visible and  not goblin2.visible and not goblin3.visible and not goblin4.visible:
-        print("Win-win!")
+        print("Win-win! Du är super Trump! ")
+        run = False
+        # win.blit(bg, (0, 0))
+        # text = font.render('Du är super Trump ', 1, (0,0,0))
+        pygame.quit()
                 
-    if score < -1:
+    if score < -5:
         print("You are looser :(")
+   
         
 
 
